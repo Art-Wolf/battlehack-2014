@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.battlehack.empowered"
+    android:versionCode="1"
+    android:versionName="1.0" >
+
+    <uses-sdk
+        android:minSdkVersion="13"
+        android:targetSdkVersion="19" />
+
+    <uses-feature
+        android:name="android.hardware.camera"
+        android:required="true" />
+
+    <application
+        android:allowBackup="true"
+        android:icon="@drawable/ic_launcher"
+        android:label="@string/app_name"
+        android:theme="@style/AppTheme" >
+        <activity
+            android:name="com.battlehack.empowered.MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name="com.battlehack.empowered.DashboardActivity"
+            android:label="@string/title_activity_dashboard"
+            android:parentActivityName="com.battlehack.empowered.MainActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.battlehack.empowered.MainActivity" />
+        </activity>
+        <activity
+            android:name="com.battlehack.empowered.CreateSuccessActivity"
+            android:label="@string/title_activity_create_success"
+            android:parentActivityName="com.battlehack.empowered.DashboardActivity" >
+            <meta-data
+                android:name="android.support.PARENT_ACTIVITY"
+                android:value="com.battlehack.empowered.DashboardActivity" />
+        </activity>
+    </application>
+
+</manifest>

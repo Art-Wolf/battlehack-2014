@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">Empowered</string>
+    <string name="action_settings">Settings</string>
+    <string name="tvUserName">User Name:</string>
+    <string name="tvPassword">Password:</string>
+    <string name="btLogin">Login</string>
+    <string name="title_activity_dashboard">DashboardActivity</string>
+    <string name="title_section1">Create</string>
+    <string name="title_section2">My Issues</string>
+    <string name="title_section3">Local Issues</string>
+    <string name="title_section4">Assigned</string>
+    <string name="tvCreateTitle">Title:</string>
+    <string name="tvCreatedBy">Created By:</string>
+    <string name="tvCreateDescription">Description:</string>
+    <string name="tvCreateImageURL">Image:</string>
+    <string name="tvCreateLatitude">Latitude:</string>
+    <string name="tvCreateLongitude">Longitude:</string>
+    <string name="btCreateIssue">Create Issue</string>
+    <string name="title_activity_create_success">CreateSuccessActivity</string>
+    <string name="hello_world">Hello world!</string>
+
+</resources>
