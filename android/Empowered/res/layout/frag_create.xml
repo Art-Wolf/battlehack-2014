@@ -63,7 +63,7 @@
         android:layout_alignBaseline="@+id/textView4"
         android:layout_alignBottom="@+id/textView4"
         android:layout_alignParentRight="true"
-        android:lines="5"
+        android:lines="4"
         android:ems="10" />
 
     <Button
@@ -80,35 +80,29 @@
         android:id="@+id/button1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_centerHorizontal="true"
-        android:layout_marginBottom="78dp"
+        android:layout_alignLeft="@+id/spPledgeAmount"
+        android:layout_below="@+id/spPledgeAmount"
+        android:layout_marginLeft="14dp"
+        android:layout_marginTop="78dp"
         android:enabled="false"
         android:onClick="createIssue"
         android:text="@string/btCreateIssue" />
-
-    <Spinner
-        android:id="@+id/spPledgeAmount"
-        android:layout_width="fill_parent"
-        android:layout_height="wrap_content"
-        android:layout_above="@+id/button1"
-        android:layout_alignLeft="@+id/button1" />
-
-    <TextView
-        android:id="@+id/TextView01"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:text="@string/tvCreateDescription" />
 
     <TextView
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBottom="@+id/spPledgeAmount"
-        android:layout_alignParentLeft="true"
-        android:layout_marginBottom="20dp"
+        android:layout_marginTop="35dp"
+        android:layout_alignLeft="@+id/textView4"
+         android:layout_below="@+id/textView4"
         android:text="Pledge Amounts" />
+
+    <Spinner
+        android:id="@+id/spPledgeAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp"
+        android:layout_alignLeft="@+id/etCreateDescription"
+        android:layout_below="@+id/etCreateDescription" />
 
 </RelativeLayout>

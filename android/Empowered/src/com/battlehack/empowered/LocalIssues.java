@@ -19,92 +19,134 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMap.OnMarkerClickListener;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
+import android.content.Context;
 import android.content.Intent;
+import android.location.Location;
+import android.location.LocationManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.View.OnClickListener;
 import android.view.ViewGroup;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
-import android.widget.Button;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.ExpandableListView;
-import android.widget.Spinner;
 
 public class LocalIssues extends Fragment {
+	
+	public final static String ISSUE_TITLE = "com.battlehack.ISSUE_TITLE";
+	public final static String ISSUE_DESCRIPTION = "com.battlehack.ISSUE_DESCRIPTION";
+	public final static String ISSUE_IMG = "com.battlehack.ISSUE_IMG";
+	public final static String ISSUE_ID = "com.battlehack.ISSUE_ID";
 	
 	ExpandableListAdapter listAdapter;
     ExpandableListView expListView;
     List<String> listDataHeader = new ArrayList<String>();;
     HashMap<String, List<String>> listDataChild = new HashMap<String, List<String>>();
+    private boolean asyncFinished = false;
+    private JSONArray jsonArray;
     
 	public View onCreateView(LayoutInflater inflater, ViewGroup container,
             Bundle savedInstanceState) {
  
-        View view = inflater.inflate(R.layout.frag_localissues, container, false);
+        View view = inflater.inflate(R.layout.activity_map, container, false);
 
-        expListView = (ExpandableListView) view.findViewById(R.id.lvExp);
-        
-        // preparing list data
-        //prepareListData();
-        AsyncTaskRunner task = new AsyncTaskRunner();
-        task.execute();
-        
-        while (listDataHeader.size() < 1) {
-        	//wait for the webcall...
+		// Get a handle to the Map Fragment
+        GoogleMap map = ((MapFragment) this.getActivity().getFragmentManager().findFragmentById(R.id.map)).getMap();
+
+        //InputMethodManager imm = (InputMethodManager) this.getActivity().getSystemService(
+        //	      Context.INPUT_METHOD_SERVICE);
+        //imm.hideSoftInputFromWindow(this.getActivity().findViewById(R.id.map).getWindowToken(), 0);
         	
+		LocationManager locationManager = (LocationManager) this.getActivity().getSystemService(Context.LOCATION_SERVICE);
+		
+		Location location = locationManager.getLastKnownLocation(LocationManager.NETWORK_PROVIDER);  
+		
+        LatLng currentLocation = new LatLng(location.getLatitude(), location.getLongitude());
+
+        AsyncTaskRunner task = new AsyncTaskRunner();
+        task.execute("" + location.getLatitude() , "" + location.getLongitude(), "" + 1);
+        
+        while (!asyncFinished) {
+        	//wait
         }
-        listAdapter = new ExpandableListAdapter(this.getActivity(), listDataHeader, listDataChild);
- 
-        // setting list adapter
-        expListView.setAdapter(listAdapter);
+        
+        List<LatLng> points = new ArrayList<LatLng>(); // route is instance of PolylineOptions 
+
+        LatLngBounds.Builder bc = new LatLngBounds.Builder();
+        points.add(currentLocation);
+        
+        for (LatLng item : points) {
+            bc.include(item);
+        }
+        
+        map.setMyLocationEnabled(true);
+        map.moveCamera(CameraUpdateFactory.newLatLngZoom(currentLocation, 19));
+        
+        for (int i = 0; i < jsonArray.length(); i++) {
+        	try {
+				JSONObject json = jsonArray.getJSONObject(i);
+				LatLng latLngTemp = new LatLng(json.getDouble("latitude"), json.getDouble("longitude"));
+				points.add(latLngTemp);
+				
+				Marker markerTmp = map.addMarker(new MarkerOptions()
+                .title(json.getString("title"))
+                .snippet(json.getString("description"))
+                .position(latLngTemp));
+			} catch (JSONException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
+        }
+        
+    
         //((TextView)android.findViewById(R.id.textView)).setText("Android");
+        
+        map.setOnMarkerClickListener(new OnMarkerClickListener() {
+            public boolean onMarkerClick(Marker marker) {
+                // Check if there is an open info window
+            	for (int i = 0; i < jsonArray.length(); i++) {
+                	try {
+        				JSONObject json = jsonArray.getJSONObject(i);
+        				if(marker.getTitle().equals(json.getString("title"))){
+        					startIntent(json);
+        				}
+        			} catch (JSONException e) {
+        				// TODO Auto-generated catch block
+        				e.printStackTrace();
+        			}
+                }
+            	
+            	return false;
+            }
+        });
         return view;
 }
-
-	private void prepareListData() {
-		// TODO Auto-generated method stub
-		//listDataHeader = new ArrayList<String>();
-        //listDataChild = new HashMap<String, List<String>>();
- 
-        // Adding child data
-        listDataHeader.add("Top 250");
-        listDataHeader.add("Now Showing");
-        listDataHeader.add("Coming Soon..");
- 
-        // Adding child data
-        List<String> top250 = new ArrayList<String>();
-        top250.add("The Shawshank Redemption");
-        top250.add("The Godfather");
-        top250.add("The Godfather: Part II");
-        top250.add("Pulp Fiction");
-        top250.add("The Good, the Bad and the Ugly");
-        top250.add("The Dark Knight");
-        top250.add("12 Angry Men");
- 
-        List<String> nowShowing = new ArrayList<String>();
-        nowShowing.add("The Conjuring");
-        nowShowing.add("Despicable Me 2");
-        nowShowing.add("Turbo");
-        nowShowing.add("Grown Ups 2");
-        nowShowing.add("Red 2");
-        nowShowing.add("The Wolverine");
- 
-        List<String> comingSoon = new ArrayList<String>();
-        comingSoon.add("2 Guns");
-        comingSoon.add("The Smurfs 2");
-        comingSoon.add("The Spectacular Now");
-        comingSoon.add("The Canyons");
-        comingSoon.add("Europa Report");
- 
-        listDataChild.put(listDataHeader.get(0), top250); // Header, Child data
-        listDataChild.put(listDataHeader.get(1), nowShowing);
-        listDataChild.put(listDataHeader.get(2), comingSoon);
+	public void startIntent(JSONObject jsonIntent) {
+		Intent intent = new Intent(this.getActivity() , IssueActivity.class);
+    	try {
+			intent.putExtra(ISSUE_TITLE, jsonIntent.getString("title"));
+			intent.putExtra(ISSUE_DESCRIPTION, jsonIntent.getString("description"));
+	    	intent.putExtra(ISSUE_IMG, jsonIntent.getString("image_url"));
+	    	intent.putExtra(ISSUE_ID, jsonIntent.getString("id"));
+	    	startActivity(intent);
+		} catch (JSONException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+    	
 	}
-	
+
 	class AsyncTaskRunner extends AsyncTask<String, String, String> {
 
 
@@ -114,11 +156,23 @@ public class LocalIssues extends Fragment {
 		protected String doInBackground(String... params) {
 
 			HttpClient httpClient = new DefaultHttpClient();
-			HttpGet request = new HttpGet("http://empowered-locals.herokuapp.com/api/v1/issue/list");
+			HttpPost request = new HttpPost("http://empowered-locals.herokuapp.com/api/v1/issue/nearby");
 			request.setHeader("Content-Type", "application/json");
 			
+			JSONObject json = new JSONObject();
+
+			try {
+				json.put("latitude", params[0]);
+				json.put("longitude", params[1]);
+				json.put("mile_radius", params[2]);
+			} catch (JSONException e1) {
+				// TODO Auto-generated catch block
+				e1.printStackTrace();
+			}
 			
 			try {
+				request.setEntity(new StringEntity(json.toString()));
+				
 				HttpResponse response = httpClient.execute(request);
 	            BufferedReader reader = new BufferedReader(new InputStreamReader(
 	                    response.getEntity().getContent(), "UTF-8"));
@@ -129,23 +183,10 @@ public class LocalIssues extends Fragment {
 	                s = s.append(sResponse);
 	            }
 	            
-	            Log.d("localissues", s.toString());
-	            JSONArray jsonArray = new JSONArray(s.toString());
+	            JSONObject jsonResponse = new JSONObject(s.toString());
 	            
-	            for (int i = 0; i < jsonArray.length(); i++) {
-	            	JSONObject json = jsonArray.getJSONObject(i);
-	            	listDataHeader.add(json.getString("title"));
-	            	List<String> top250 = new ArrayList<String>();
-	                top250.add("The Shawshank Redemption");
-	                top250.add("The Godfather");
-	                top250.add("The Godfather: Part II");
-	                top250.add("Pulp Fiction");
-	                top250.add("The Good, the Bad and the Ugly");
-	                top250.add("The Dark Knight");
-	                top250.add("12 Angry Men");
-	                listDataChild.put(listDataHeader.get(i), top250);
-	            }
-				
+	            jsonArray = new JSONArray(jsonResponse.get("issues").toString());
+	           
 			} catch (UnsupportedEncodingException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
@@ -161,7 +202,7 @@ public class LocalIssues extends Fragment {
 			}
 
 
-
+			asyncFinished = true;
 			return resp;
 		}
 
@@ -182,6 +223,4 @@ public class LocalIssues extends Fragment {
 			// progress. For example updating ProgessDialog
 		}
 	}
-
-
 }

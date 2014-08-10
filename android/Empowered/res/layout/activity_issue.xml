@@ -1,0 +1,44 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+	android:orientation="vertical"
+            android:layout_centerHorizontal="true"
+    tools:context="com.battlehack.empowered.IssueActivity" >
+
+    <Spinner
+        android:id="@+id/spPledgeAmount"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="35dp" />
+    
+    <Button
+        android:id="@+id/butPledge"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/spPledgeAmount"
+        android:layout_marginTop="42dp"
+        android:onClick="pledge"
+        android:text="@string/btPledge" />
+    
+   
+    
+    <TextView
+        android:id="@+id/tvIssueTitle"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
+    <TextView
+        android:id="@+id/tvIssueDescription"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content" />
+    
+     <ImageView
+        android:id="@+id/imageView1"
+        android:layout_width="200dp"
+        android:layout_height="400dp"
+        android:contentDescription="Description"
+        android:maxHeight="200dp"
+        android:maxWidth="400dp" />
+
+</LinearLayout>

@@ -18,12 +18,12 @@ public class TabPagerAdapter extends FragmentStatePagerAdapter {
             return new CreateIssue();
         case 1:
            //Fragment for Ios Tab
-            return new Ios();
+            return new MyIssues();
         case 2:
             //Fragment for Windows Tab
             return new LocalIssues();
         case 3:
-        	return new CreateIssue();
+        	return new Assigned();
         }
 		return null;
 		

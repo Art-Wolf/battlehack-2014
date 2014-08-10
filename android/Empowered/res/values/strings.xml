@@ -21,6 +21,7 @@
     <string name="title_activity_create_success">CreateSuccessActivity</string>
     <string name="hello_world">Hello world!</string>
     <string name="btCreateImage">Select Image</string>
+    <string name="btPledge">Pledge</string>
 
     <string-array name="planets_array">
         <item>Mercury</item>
@@ -34,5 +35,7 @@
     </string-array>
 
     <string name="title_activity_pledge">PledgeActivity</string>
+    <string name="title_activity_map">MapActivity</string>
+    <string name="title_activity_issue">IssueActivity</string>
 
 </resources>

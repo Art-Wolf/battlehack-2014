@@ -21,6 +21,7 @@ import org.apache.http.impl.client.DefaultHttpClient;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import com.google.android.gms.maps.model.Marker;
 import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
@@ -64,12 +65,14 @@ public class DashboardActivity extends FragmentActivity implements LocationListe
 	private LocationManager locationManager;
 	private String longitude;
 	private String latitude;
-	private static final int SELECT_PICTURE = 65537;
+	private static final int SELECT_PICTURE = 262145;
 	private String fileLocation = "";
 	
 	private String pledgeAmount = "";
 	private String pledgeID = "";
 	private String issueId = "";
+	
+
 	
 	private static final String TAG = "paymentExample";
     /**
@@ -81,7 +84,7 @@ public class DashboardActivity extends FragmentActivity implements LocationListe
      * - Set to PayPalConfiguration.ENVIRONMENT_NO_NETWORK to kick the tires
      * without communicating to PayPal's servers.
      */
-    private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_SANDBOX;
+    private static final String CONFIG_ENVIRONMENT = PayPalConfiguration.ENVIRONMENT_NO_NETWORK;
 
     // note that these credentials will differ between live & sandbox environments.
     private static final String CONFIG_CLIENT_ID = "AfeYLhAwa__zrcfT17Tm8WEbZ9vBaoQpUI5GCfVxMJqQWgM1LpfrPTHloG0U";
@@ -213,7 +216,7 @@ public class DashboardActivity extends FragmentActivity implements LocationListe
 		actionBar.addTab(actionBar.newTab().setText("My Issues")
 				.setTabListener(tabListener));
 		actionBar.addTab(actionBar.newTab().setText("Local Issues")
-				.setTabListener(tabListener));
+				.setTabListener(tabListener), true);
 		actionBar.addTab(actionBar.newTab().setText("Assigned")
 				.setTabListener(tabListener));
 
@@ -223,6 +226,16 @@ public class DashboardActivity extends FragmentActivity implements LocationListe
 	}
 
 
+	public void pledge(View view) {
+		PayPalPayment thingToBuy = getThingToBuy(PayPalPayment.PAYMENT_INTENT_SALE);
+
+        Intent intent = new Intent(this, PaymentActivity.class);
+
+        intent.putExtra(PaymentActivity.EXTRA_PAYMENT, thingToBuy);
+
+        startActivityForResult(intent, REQUEST_CODE_PAYMENT);
+	}
+	
 	public void createIssue(View view) {
 		EditText createTitle = (EditText) findViewById(R.id.etCreateTitle);
 		EditText createdBy = (EditText) findViewById(R.id.etCreatedBy);

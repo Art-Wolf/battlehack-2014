@@ -91,7 +91,7 @@ public class PledgeActivity extends Activity {
 
 			try {
 				json.put("paypal_id", params[0]);
-				json.put("issue_id", params[1]);
+				json.put("issue_id", params[1].replace("\"", ""));
 				json.put("pledge_amount", params[2]);
 				json.put("user_id", "John");
 			} catch (JSONException e1) {
