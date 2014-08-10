@@ -22,7 +22,6 @@
     <string name="hello_world">Hello world!</string>
     <string name="btCreateImage">Select Image</string>
 
-    
     <string-array name="planets_array">
         <item>Mercury</item>
         <item>Venus</item>
@@ -33,4 +32,7 @@
         <item>Uranus</item>
         <item>Neptune</item>
     </string-array>
+
+    <string name="title_activity_pledge">PledgeActivity</string>
+
 </resources>

@@ -25,8 +25,10 @@ import com.paypal.android.sdk.payments.PayPalConfiguration;
 import com.paypal.android.sdk.payments.PayPalPayment;
 import com.paypal.android.sdk.payments.PayPalService;
 import com.paypal.android.sdk.payments.PaymentActivity;
+import com.paypal.android.sdk.payments.PaymentConfirmation;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.FragmentTransaction;
 import android.content.Context;
 import android.content.CursorLoader;
@@ -48,8 +50,14 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.Spinner;
+import android.widget.Toast;
 
 public class DashboardActivity extends FragmentActivity implements LocationListener {
+	public final static String PLEDGE_ID = "com.battlehack.PLEDGE_ID";
+	public final static String ISSUE_ID = "com.battlehack.ISSUE_ID";
+	public final static String PLEDGE_AMOUNT = "com.battlehack.PLEDGE_AMOUNT";
+	
 	ViewPager Tab;
 	TabPagerAdapter TabAdapter;
 	ActionBar actionBar;
@@ -58,6 +66,10 @@ public class DashboardActivity extends FragmentActivity implements LocationListe
 	private String latitude;
 	private static final int SELECT_PICTURE = 65537;
 	private String fileLocation = "";
+	
+	private String pledgeAmount = "";
+	private String pledgeID = "";
+	private String issueId = "";
 	
 	private static final String TAG = "paymentExample";
     /**
@@ -90,6 +102,36 @@ public class DashboardActivity extends FragmentActivity implements LocationListe
 
 	    Log.d("onActivityResult","onActivityResult:" + requestCode);
 	    switch(requestCode) { 
+	    case REQUEST_CODE_PAYMENT:
+	    	if (resultCode == Activity.RESULT_OK) {
+                PaymentConfirmation confirm =
+                		imageReturnedIntent.getParcelableExtra(PaymentActivity.EXTRA_RESULT_CONFIRMATION);
+                if (confirm != null) {
+                    try {
+                    	pledgeID = confirm.toJSONObject().getJSONObject("response").getString("id"); // toString(4));
+                        //Log.i(TAG, confirm.getPayment().toJSONObject().toString(4));
+                        /**
+                         *  TODO: send 'confirm' (and possibly confirm.getPayment() to your server for verification
+                         * or consent completion.
+                         * See https://developer.paypal.com/webapps/developer/docs/integration/mobile/verify-mobile-payment/
+                         * for more details.
+                         *
+                         * For sample mobile backend interactions, see
+                         * https://github.com/paypal/rest-api-sdk-python/tree/master/samples/mobile_backend
+                         */
+                    	Intent intent = new Intent(this,PledgeActivity.class);
+                    	intent.putExtra(PLEDGE_ID, pledgeID);
+                    	intent.putExtra(ISSUE_ID, issueId);
+                    	intent.putExtra(PLEDGE_AMOUNT, pledgeAmount);
+                    	startActivity(intent);
+                    	
+
+                    } catch (JSONException e) {
+                        Log.e(TAG, "an extremely unlikely failure occurred: ", e);
+                    }
+                }
+	    	}
+	    	break;
 	    case SELECT_PICTURE:
 	    	 Log.d("onActivityResult","onActivityResult:" + SELECT_PICTURE);
 	        if(resultCode == RESULT_OK){  
@@ -214,7 +256,9 @@ public class DashboardActivity extends FragmentActivity implements LocationListe
 	}
 
 	private PayPalPayment getThingToBuy(String paymentIntentSale) {
-		    return new PayPalPayment(new BigDecimal("1.75"), "USD", "hipster jeans",
+			Spinner spin = (Spinner) findViewById(R.id.spPledgeAmount);
+			pledgeAmount = (String) spin.getSelectedItem();
+		    return new PayPalPayment(new BigDecimal((String) spin.getSelectedItem()), "USD", "Pledge",
 		    		paymentIntentSale);
 	    
 	}
@@ -244,9 +288,23 @@ public class DashboardActivity extends FragmentActivity implements LocationListe
 			HttpClient httpClient = new DefaultHttpClient();
 			HttpPost request = new HttpPost("http://empowered-locals.herokuapp.com/api/v1/issue");
 			request.setHeader("Content-Type", "application/json");
+			
+			
 			try {
 				request.setEntity(new StringEntity(json.toString()));
-				httpClient.execute(request);
+				
+				HttpResponse response = httpClient.execute(request);
+	            BufferedReader reader = new BufferedReader(new InputStreamReader(
+	                    response.getEntity().getContent(), "UTF-8"));
+	            String sResponse;
+	            StringBuilder s = new StringBuilder();
+	 
+	            while ((sResponse = reader.readLine()) != null) {
+	                s = s.append(sResponse);
+	            }
+	            
+	            issueId = s.toString();
+				
 			} catch (UnsupportedEncodingException e1) {
 				// TODO Auto-generated catch block
 				e1.printStackTrace();
