@@ -22,7 +22,9 @@
     <string name="hello_world">Hello world!</string>
     <string name="btCreateImage">Select Image</string>
     <string name="btPledge">Pledge</string>
-
+	<string name="white">FFFFFF</string>
+	<string name="black">000000</string>
+	
     <string-array name="planets_array">
         <item>Mercury</item>
         <item>Venus</item>

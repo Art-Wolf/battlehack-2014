@@ -54,6 +54,7 @@
         android:layout_height="wrap_content"
         android:layout_above="@+id/textView2"
         android:layout_alignParentRight="true"
+        android:text="John"
         android:ems="10" />
 
     <EditText
